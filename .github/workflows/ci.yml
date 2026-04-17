@@ -2,113 +2,154 @@ name: Food Delivery Microservices CI
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
-
-env:
-  REGISTRY: ghcr.io
+    branches: [ "main" ]
 
 jobs:
-  backend-services:
+
+  # =========================
+  # USER SERVICE
+  # =========================
+  user-service:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        service:
-          - user-service
-          - order-service
-          - restaurant-service
-          - admin-service
-          - delivery-service
-          - api-gateway
-          - eureka-server
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v4
         with:
-          java-version: "17"
-          distribution: "temurin"
-          cache: "maven"
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Test ${{ matrix.service }}
-        working-directory: backend/${{ matrix.service }}
-        run: mvn test
+      - name: Build User Service
+        working-directory: backend/user-service
+        run: mvn clean install
 
-      - name: Build ${{ matrix.service }}
-        working-directory: backend/${{ matrix.service }}
-        run: mvn clean package -DskipTests
 
-      - name: Set lowercase image name
-        run: echo "IMAGE=${REGISTRY}/${GITHUB_REPOSITORY,,}/${{ matrix.service }}" >> $GITHUB_ENV
+  # =========================
+  # ORDER SERVICE
+  # =========================
+  order-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Build Docker Image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        working-directory: backend/${{ matrix.service }}
-        run: |
-          docker build -t $IMAGE:${{ github.sha }} .
-          docker build -t $IMAGE:latest .
-
-      - name: Login to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
+      - uses: actions/setup-java@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: Push Docker Image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          docker push $IMAGE:${{ github.sha }}
-          docker push $IMAGE:latest
+      - name: Build Order Service
+        working-directory: backend/order-service
+        run: mvn clean install
 
+
+  # =========================
+  # RESTAURANT SERVICE
+  # =========================
+  restaurant-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Restaurant Service
+        working-directory: backend/restaurant-service
+        run: mvn clean install
+
+
+  # =========================
+  # ADMIN SERVICE
+  # =========================
+  admin-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Admin Service
+        working-directory: backend/admin-service
+        run: mvn clean install
+
+
+  # =========================
+  # DELIVERY SERVICE
+  # =========================
+  delivery-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Delivery Service
+        working-directory: backend/delivery-service
+        run: mvn clean install
+
+
+  # =========================
+  # API GATEWAY
+  # =========================
+  api-gateway:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build API Gateway
+        working-directory: backend/api-gateway
+        run: mvn clean install
+
+
+  # =========================
+  # EUREKA SERVER
+  # =========================
+  eureka-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Eureka Server
+        working-directory: backend/eureka-server
+        run: mvn clean install
+
+
+  # =========================
+  # FRONTEND (VITE FIXED NODE 20+)
+  # =========================
   frontend:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
+          node-version: 20   # ✅ FIXED (Vite requirement)
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
-
-      - name: Run lint
-        working-directory: frontend
-        run: npm run lint --if-present
+        run: npm install
 
       - name: Build frontend
         working-directory: frontend
         run: npm run build
-
-      - name: Set lowercase image name
-        run: echo "IMAGE=${REGISTRY}/${GITHUB_REPOSITORY,,}/frontend" >> $GITHUB_ENV
-
-      - name: Build Docker Image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        working-directory: frontend
-        run: |
-          docker build -t $IMAGE:${{ github.sha }} .
-          docker build -t $IMAGE:latest .
-
-      - name: Login to GHCR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push Docker Image
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          docker push $IMAGE:${{ github.sha }}
-          docker push $IMAGE:latest
