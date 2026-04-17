@@ -6,9 +6,14 @@ on:
   pull_request:
     branches: ["main"]
 
+# 🔥 IMPORTANT FIX (this solves your GHCR error)
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io
-  IMAGE_OWNER: ${{ github.repository_owner }}
+  IMAGE_OWNER: ${{ github.actor }}
 
 jobs:
 
@@ -79,7 +84,7 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-java: '17'
           distribution: 'temurin'
 
       - name: Build JAR
