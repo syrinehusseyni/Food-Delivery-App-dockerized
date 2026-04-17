@@ -17,6 +17,7 @@ jobs:
   # ============================================
   user-service:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +31,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/user-service:latest backend/user-service
@@ -44,6 +45,7 @@ jobs:
   # ============================================
   order-service:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -57,7 +59,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/order-service:latest backend/order-service
@@ -71,6 +73,7 @@ jobs:
   # ============================================
   restaurant-service:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -84,7 +87,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/restaurant-service:latest backend/restaurant-service
@@ -98,6 +101,7 @@ jobs:
   # ============================================
   admin-service:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -111,7 +115,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/admin-service:latest backend/admin-service
@@ -125,6 +129,7 @@ jobs:
   # ============================================
   delivery-service:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -138,7 +143,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/delivery-service:latest backend/delivery-service
@@ -152,6 +157,7 @@ jobs:
   # ============================================
   api-gateway:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -165,7 +171,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/api-gateway:latest backend/api-gateway
@@ -179,6 +185,7 @@ jobs:
   # ============================================
   eureka-server:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -192,7 +199,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Login to GHCR
-        run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build Docker Image
         run: docker build -t $REGISTRY/$IMAGE_OWNER/eureka-server:latest backend/eureka-server
@@ -202,10 +209,11 @@ jobs:
 
 
   # ============================================
-  # FRONTEND (NO DOCKER FOR NOW)
+  # FRONTEND
   # ============================================
   frontend:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
